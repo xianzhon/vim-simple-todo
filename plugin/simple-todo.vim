@@ -95,33 +95,37 @@ function! s:go(type,...) abort
     let [lnum1, lnum2] = [line("'["), line("']")]
   endif
 
-  let s:mark_todo = '\1[ ]'
-  let s:mark_done = '\1[' . g:simple_todo_tick_symbol . ']'
-  let s:pat_mark_todo = '^\(\s*[-+*]\?\s*\)\[ \]'
-  let s:pat_mark_done = '^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']'
+  let s:mark_todo = '\1[ ] '
+  let s:mark_done = '\1[' . g:simple_todo_tick_symbol . '] '
+  let s:pat_mark_todo = '^\(\s*[-+*]\?\s*\)\[ \] '
+  let s:pat_mark_done = '^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . '] '
   for lnum in range(lnum1,lnum2)
     let line = getline(lnum)
     if strlen(line) > 0
-        if a:type == 0 " add [ ]
-            if line !~ s:pat_mark_todo && line !~ s:pat_mark_done
-              let line = substitute(line,'^\(\s*\)',s:mark_todo.' ','')
-            endif
-        elseif a:type == 1 " mark done
-            if line =~ s:pat_mark_todo
-              let line = substitute(line,s:pat_mark_todo,s:mark_done,'')
-            endif
-        elseif a:type == 2 " mark undone
-            if line =~ s:pat_mark_done
-              let line = substitute(line,s:pat_mark_done,s:mark_todo,'')
-            endif
-        elseif a:type == 3 " switch mark
-            if line =~ s:pat_mark_todo
-              let line = substitute(line,s:pat_mark_todo,s:mark_done ,'')
-            elseif line =~ s:pat_mark_done
-              let line = substitute(line,s:pat_mark_done,s:mark_todo,'')
-            endif
+      if a:type == 0 " toggle [ ]
+        if line =~ s:pat_mark_todo
+          let line = substitute(line,s:pat_mark_todo,'\1','')
+        elseif line =~ s:pat_mark_done
+          let line = substitute(line,s:pat_mark_done,'\1','')
+        else
+          let line = substitute(line,'^\(\s*\)',s:mark_todo,'')
         endif
-        call setline(lnum,line)
+      elseif a:type == 1 " mark done
+        if line =~ s:pat_mark_todo
+          let line = substitute(line,s:pat_mark_todo,s:mark_done,'')
+        endif
+      elseif a:type == 2 " mark undone
+        if line =~ s:pat_mark_done
+          let line = substitute(line,s:pat_mark_done,s:mark_todo,'')
+        endif
+      elseif a:type == 3 " switch mark
+        if line =~ s:pat_mark_todo
+          let line = substitute(line,s:pat_mark_todo,s:mark_done ,'')
+        elseif line =~ s:pat_mark_done
+          let line = substitute(line,s:pat_mark_done,s:mark_todo,'')
+        endif
+      endif
+      call setline(lnum,line)
     end
   endfor
 endfunction
@@ -132,8 +136,8 @@ inoremap <silent> <Plug>(simple-todo-mark-switch)           :<C-U>call <SID>go(3
         \:silent! call repeat#set("\<Plug>(simple-todo-mark-switch)")<cr>
 xnoremap <silent> <Plug>(simple-todo-mark-switch)           :<C-U>call <SID>go(3,line("'<"),line("'>"))<CR>
         \:silent! call repeat#set("\<Plug>(simple-todo-mark-switch)")<cr>
-xnoremap <silent> <Plug>(simple-todo-new-start-of-line)     :<C-U>call <SID>go(0,line("'<"),line("'>"))<CR>
-        \:silent! call repeat#set("\<Plug>(simple-todo-new-start-of-line)")<cr>
+xnoremap <silent> <Plug>(simple-todo-new-start-of-line-toggle)     :<C-U>call <SID>go(0,line("'<"),line("'>"))<CR>
+        \:silent! call repeat#set("\<Plug>(simple-todo-new-start-of-line-toggle)")<cr>
 xnoremap <silent> <Plug>(simple-todo-mark-as-done)          :<C-U>call <SID>go(1,line("'<"),line("'>"))<CR>
         \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-done)")<cr>
 xnoremap <silent> <Plug>(simple-todo-mark-as-undone)        :<C-U>call <SID>go(2,line("'<"),line("'>"))<CR>
@@ -164,7 +168,7 @@ if g:simple_todo_map_keys
   endif
 
   if g:simple_todo_map_visual_mode_keys
-    vmap <Leader>I <Plug>(simple-todo-new-start-of-line)
+    vmap <Leader>I <Plug>(simple-todo-new-start-of-line-toggle)
     vmap <Leader>X <Plug>(simple-todo-mark-as-undone)
     vmap <Leader>x <Plug>(simple-todo-mark-as-done)
     vmap <Leader>s <Plug>(simple-todo-mark-switch)
