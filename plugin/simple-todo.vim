@@ -73,19 +73,19 @@ nnore <silent> <Plug>(simple-todo-above) O<c-r>=<SID>get_list_marker(line('.')+1
 inore <silent> <Plug>(simple-todo-above) <Esc>O<c-r>=<SID>get_list_marker(line('.')+1)<cr>[ ]<space>
 
 " Mark item under cursor as done
-nnore <silent> <Plug>(simple-todo-mark-as-done) :execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/'<cr>
+nnore <silent> <Plug>(simple-todo-mark-as-done) :execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-done)")<cr>
-vnore <silent> <Plug>(simple-todo-mark-as-done) :execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/'<cr>
+vnore <silent> <Plug>(simple-todo-mark-as-done) :execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-done)")<cr>
-inore <silent> <Plug>(simple-todo-mark-as-done) <Esc>:execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/'<cr>
+inore <silent> <Plug>(simple-todo-mark-as-done) <Esc>:execute 's/^\(\s*[-+*]\?\s*\)\[ \]/\1[' . g:simple_todo_tick_symbol . ']/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-done)")<cr>
 
 " Mark as undone
-nnore <silent> <Plug>(simple-todo-mark-as-undone) :execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/'<cr>
+nnore <silent> <Plug>(simple-todo-mark-as-undone) :execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-undone)")<cr>
-vnore <silent> <Plug>(simple-todo-mark-as-undone) :execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/'<cr>
+vnore <silent> <Plug>(simple-todo-mark-as-undone) :execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-undone)")<cr>
-inore <silent> <Plug>(simple-todo-mark-as-undone) <Esc>:execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/'<cr>
+inore <silent> <Plug>(simple-todo-mark-as-undone) <Esc>:execute 's/^\(\s*[-+*]\?\s*\)\[' . g:simple_todo_tick_symbol . ']/\1[ ]/e'<cr>:nohl<cr>
       \:silent! call repeat#set("\<Plug>(simple-todo-mark-as-undone)")<cr>
 
 function! s:go(type,...) abort
@@ -108,7 +108,7 @@ function! s:go(type,...) abort
             endif
         elseif a:type == 1 " mark done
             if line =~ s:pat_mark_todo
-              let line = substitute(line,s:pat_mark_todo, s:mark_done ,'')
+              let line = substitute(line,s:pat_mark_todo,s:mark_done,'')
             endif
         elseif a:type == 2 " mark undone
             if line =~ s:pat_mark_done
